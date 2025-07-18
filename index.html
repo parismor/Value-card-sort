@@ -1,112 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Value Card Sort – Round 1</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Value Card Sort</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 1000px; margin: auto; text-align: center; }
-    .piles { display: flex; justify-content: space-between; margin-top: 40px; }
-    .pile { width: 30%; min-height: 200px; border: 2px dashed #ccc; padding: 10px; border-radius: 10px; }
-    .pile-title { font-weight: bold; margin-bottom: 10px; }
-    .card-area { width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f3f3;
+      margin: 0;
+      padding: 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 1em;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .pile {
+      width: 30%;
+      min-height: 400px;
+      border: 2px dashed #ccc;
+      padding: 10px;
+      background: #fff;
+    }
+
+    #card-stack {
+      width: 35%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .card {
-      background: #f9f9f9; padding: 20px 30px; border: 1px solid #ccc;
-      border-radius: 8px; font-size: 18px; font-weight: bold; margin: 20px 0;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      background: #ffffff;
+      padding: 1em;
+      margin: 1em 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 300px;
+      position: relative;
+      transition: all 0.3s ease-in-out;
     }
-    button {
-      margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer;
+
+    .value-name {
+      font-weight: bold;
+      font-size: 1.2em;
     }
-    .card-stack { margin-top: 10px; font-size: 14px; color: #666; }
-    .next-button { margin-top: 30px; display: none; }
+
+    .value-desc {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 0.5em;
+    }
+
+    .card-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1em;
+    }
+
+    .card-buttons button {
+      padding: 0.5em 1em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .discard-btn {
+      background: #e57373;
+      color: #fff;
+    }
+
+    .keep-btn {
+      background: #81c784;
+      color: #fff;
+    }
+
+    .pile h3 {
+      text-align: center;
+      margin-bottom: 1em;
+    }
   </style>
 </head>
 <body>
-
-  <h2>Round 1: Sort Your Value Cards</h2>
-  <p>Decide which values are most important to you. Click <strong>Keep</strong> or <strong>Discard</strong> for each card.</p>
-
-  <div class="piles">
-    <div class="pile" id="keepPile">
-      <div class="pile-title">Keep</div>
+  <h1>Work Value Card Sort</h1>
+  <div class="container">
+    <div id="discard-pile" class="pile">
+      <h3>Discard</h3>
     </div>
 
-    <div class="card-area">
-      <div class="card" id="currentCard">Loading...</div>
-      <div>
-        <button onclick="choose('keep')">Keep</button>
-        <button onclick="choose('discard')">Discard</button>
-      </div>
-      <div class="card-stack" id="progressInfo">Card 1 of 51</div>
-    </div>
+    <div id="card-stack"></div>
 
-    <div class="pile" id="discardPile">
-      <div class="pile-title">Discard</div>
+    <div id="keep-pile" class="pile">
+      <h3>Keep</h3>
     </div>
-  </div>
-
-  <div class="next-button">
-    <button onclick="goToNext()">Continue to Round 2</button>
   </div>
 
   <script>
     const values = [
-      "Achievement", "Adventure", "Authenticity", "Autonomy", "Balance", "Beauty", "Challenge",
-      "Collaboration", "Community", "Compassion", "Competence", "Confidence", "Connection",
-      "Contribution", "Courage", "Creativity", "Curiosity", "Determination", "Diversity", "Empathy",
-      "Environment", "Excellence", "Faith", "Family", "Freedom", "Friendship", "Fun", "Generosity",
-      "Gratitude", "Growth", "Health", "Honesty", "Humility", "Independence", "Innovation",
-      "Integrity", "Justice", "Kindness", "Knowledge", "Leadership", "Learning", "Love", "Loyalty",
-      "Mindfulness", "Openness", "Passion", "Peace", "Perseverance", "Respect", "Security"
+      { name: "Integrity", desc: "Doing the right thing even when no one is watching." },
+      { name: "Adaptability", desc: "Thriving in change and learning quickly." },
+      { name: "Collaboration", desc: "Working well with others to reach shared goals." },
+      { name: "Curiosity", desc: "Desire to explore, learn and innovate." },
+      { name: "Purpose", desc: "Aligning work with deeper meaning and values." },
+      // Add more values here...
     ];
 
-    let shuffled = [...values].sort(() => 0.5 - Math.random());
-    let index = 0;
-    let keep = [];
-    let discard = [];
+    let currentIndex = 0;
 
-    const currentCard = document.getElementById('currentCard');
-    const keepPile = document.getElementById('keepPile');
-    const discardPile = document.getElementById('discardPile');
-    const progressInfo = document.getElementById('progressInfo');
-    const nextButton = document.querySelector('.next-button');
+    const cardStack = document.getElementById("card-stack");
+    const discardPile = document.getElementById("discard-pile");
+    const keepPile = document.getElementById("keep-pile");
 
-    function updateCard() {
-      if (index < shuffled.length) {
-        currentCard.innerText = shuffled[index];
-        progressInfo.innerText = `Card ${index + 1} of ${shuffled.length}`;
-      } else {
-        currentCard.innerText = "All cards sorted!";
-        progressInfo.innerText = "";
-        nextButton.style.display = 'block';
-      }
-    }
+    function showNextCard() {
+      cardStack.innerHTML = "";
 
-    function choose(action) {
-      if (index >= shuffled.length) return;
-      const value = shuffled[index];
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'card';
-      cardDiv.innerText = value;
-
-      if (action === 'keep') {
-        keep.push(value);
-        keepPile.appendChild(cardDiv);
-      } else {
-        discard.push(value);
-        discardPile.appendChild(cardDiv);
+      if (currentIndex >= values.length) {
+        cardStack.innerHTML = "<p>You've sorted all cards!</p>";
+        return;
       }
 
-      index++;
-      updateCard();
+      const cardData = values[currentIndex];
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const name = document.createElement("div");
+      name.className = "value-name";
+      name.textContent = cardData.name;
+
+      const desc = document.createElement("div");
+      desc.className = "value-desc";
+      desc.textContent = cardData.desc;
+
+      const buttons = document.createElement("div");
+      buttons.className = "card-buttons";
+
+      const discardBtn = document.createElement("button");
+      discardBtn.className = "discard-btn";
+      discardBtn.textContent = "Discard";
+      discardBtn.onclick = () => moveCard("discard");
+
+      const keepBtn = document.createElement("button");
+      keepBtn.className = "keep-btn";
+      keepBtn.textContent = "Keep";
+      keepBtn.onclick = () => moveCard("keep");
+
+      buttons.appendChild(discardBtn);
+      buttons.appendChild(keepBtn);
+
+      card.appendChild(name);
+      card.appendChild(desc);
+      card.appendChild(buttons);
+
+      cardStack.appendChild(card);
     }
 
-    function goToNext() {
-      localStorage.setItem('round1_keep', JSON.stringify(keep));
-      window.location.href = "round2.html";
+    function moveCard(action) {
+      const cardData = values[currentIndex];
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<div class="value-name">${cardData.name}</div>
+                        <div class="value-desc">${cardData.desc}</div>`;
+
+      if (action === "keep") {
+        keepPile.appendChild(card);
+      } else {
+        discardPile.appendChild(card);
+      }
+
+      currentIndex++;
+      showNextCard();
     }
 
-    updateCard();
+    // Start
+    showNextCard();
   </script>
 </body>
 </html>
