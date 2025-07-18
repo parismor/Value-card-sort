@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Value Card Sort – Round 1</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 1000px; margin: auto; text-align: center; }
+    .piles { display: flex; justify-content: space-between; margin-top: 40px; }
+    .pile { width: 30%; min-height: 200px; border: 2px dashed #ccc; padding: 10px; border-radius: 10px; }
+    .pile-title { font-weight: bold; margin-bottom: 10px; }
+    .card-area { width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .card {
+      background: #f9f9f9; padding: 20px 30px; border: 1px solid #ccc;
+      border-radius: 8px; font-size: 18px; font-weight: bold; margin: 20px 0;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    }
+    button {
+      margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer;
+    }
+    .card-stack { margin-top: 10px; font-size: 14px; color: #666; }
+    .next-button { margin-top: 30px; display: none; }
+  </style>
+</head>
+<body>
+
+  <h2>Round 1: Sort Your Value Cards</h2>
+  <p>Decide which values are most important to you. Click <strong>Keep</strong> or <strong>Discard</strong> for each card.</p>
+
+  <div class="piles">
+    <div class="pile" id="keepPile">
+      <div class="pile-title">Keep</div>
+    </div>
+
+    <div class="card-area">
+      <div class="card" id="currentCard">Loading...</div>
+      <div>
+        <button onclick="choose('keep')">Keep</button>
+        <button onclick="choose('discard')">Discard</button>
+      </div>
+      <div class="card-stack" id="progressInfo">Card 1 of 51</div>
+    </div>
+
+    <div class="pile" id="discardPile">
+      <div class="pile-title">Discard</div>
+    </div>
+  </div>
+
+  <div class="next-button">
+    <button onclick="goToNext()">Continue to Round 2</button>
+  </div>
+
+  <script>
+    const values = [
+      "Achievement", "Adventure", "Authenticity", "Autonomy", "Balance", "Beauty", "Challenge",
+      "Collaboration", "Community", "Compassion", "Competence", "Confidence", "Connection",
+      "Contribution", "Courage", "Creativity", "Curiosity", "Determination", "Diversity", "Empathy",
+      "Environment", "Excellence", "Faith", "Family", "Freedom", "Friendship", "Fun", "Generosity",
+      "Gratitude", "Growth", "Health", "Honesty", "Humility", "Independence", "Innovation",
+      "Integrity", "Justice", "Kindness", "Knowledge", "Leadership", "Learning", "Love", "Loyalty",
+      "Mindfulness", "Openness", "Passion", "Peace", "Perseverance", "Respect", "Security"
+    ];
+
+    let shuffled = [...values].sort(() => 0.5 - Math.random());
+    let index = 0;
+    let keep = [];
+    let discard = [];
+
+    const currentCard = document.getElementById('currentCard');
+    const keepPile = document.getElementById('keepPile');
+    const discardPile = document.getElementById('discardPile');
+    const progressInfo = document.getElementById('progressInfo');
+    const nextButton = document.querySelector('.next-button');
+
+    function updateCard() {
+      if (index < shuffled.length) {
+        currentCard.innerText = shuffled[index];
+        progressInfo.innerText = `Card ${index + 1} of ${shuffled.length}`;
+      } else {
+        currentCard.innerText = "All cards sorted!";
+        progressInfo.innerText = "";
+        nextButton.style.display = 'block';
+      }
+    }
+
+    function choose(action) {
+      if (index >= shuffled.length) return;
+      const value = shuffled[index];
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card';
+      cardDiv.innerText = value;
+
+      if (action === 'keep') {
+        keep.push(value);
+        keepPile.appendChild(cardDiv);
+      } else {
+        discard.push(value);
+        discardPile.appendChild(cardDiv);
+      }
+
+      index++;
+      updateCard();
+    }
+
+    function goToNext() {
+      localStorage.setItem('round1_keep', JSON.stringify(keep));
+      window.location.href = "round2.html";
+    }
+
+    updateCard();
+  </script>
+</body>
+</html>
