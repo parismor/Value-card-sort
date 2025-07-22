@@ -93,6 +93,23 @@
     .pile h3 {
       color: #F2E1C2;
     }
+    #keep-pile,
+#discard-pile {
+  min-height: 120px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
+  border-radius: 12px;
+}
+    #keep-pile {
+  margin-left: 20px;
+}
+
+#discard-pile {
+  margin-right: 20px;
+}
   </style>
 </head>
 <body>
@@ -121,9 +138,10 @@
     });
 
   function renderCards(values) {
-    values.forEach(value => {
+    values.forEach((value, index) => {
       const card = document.createElement("div");
       card.className = "card";
+      card.style.setProperty("--i", index);
       card.draggable = true;
       card.innerHTML = `<div class='card-title'>${value.name}</div><div class='card-desc'>${value.desc}</div>`;
 
@@ -156,18 +174,28 @@
       moveCard(card, pile, data.name, pile.id === "discard-pile");
     });
   });
+function moveCard(card, pile, name, isDiscard) {
+  card.classList.remove("dragging");
+  card.remove();
 
-  function moveCard(card, pile, name, isDiscard) {
-    card.classList.remove("dragging");
-    card.remove();
-    const newCard = document.createElement("div");
-    newCard.className = "card";
-    newCard.innerHTML = `<div class='card-title'>${name}</div>`;
-    newCard.style.width = isDiscard ? "200px" : "auto";
-    newCard.style.height = isDiscard ? "40px" : "auto";
-    newCard.style.fontSize = "0.85em";
-    pile.appendChild(newCard);
-  }
+  const newCard = document.createElement("div");
+  newCard.className = "card";
+
+  newCard.innerHTML = `<div class='card-title'>${name}</div>`;
+
+  newCard.style.width = "100px";
+  newCard.style.height = "100px";
+  newCard.style.margin = "6px";
+  newCard.style.display = "inline-block";
+  newCard.style.verticalAlign = "top";
+  newCard.style.textAlign = "center";
+  newCard.style.fontSize = "0.8em";
+  newCard.style.padding = "5px";
+  newCard.style.background = "#F2E1C2"; 
+  newCard.style.borderRadius = "12px"; 
+
+  pile.appendChild(newCard);
+}
 </script>
 </body>
 </html>
