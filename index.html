@@ -98,26 +98,18 @@
     </div>
   </div>
 
-  <script>
-    const values = [
-  {
-    "name": "Accountability",
-    "desc": "Taking responsibility for one's actions and their outcomes."
-  },
-  {
-    "name": "Adaptability",
-    "desc": "Embracing change and adjusting strategies to meet evolving demands."
-  },
-  {
-    "name": "Altruism",
-    "desc": "Selflessly concerned for the well-being of others."
-  }
-];
+<script>
+  const cardStack = document.getElementById("card-stack");
+  const keepPile = document.getElementById("keep-pile");
+  const discardPile = document.getElementById("discard-pile");
 
-    const cardStack = document.getElementById("card-stack");
-    const keepPile = document.getElementById("keep-pile");
-    const discardPile = document.getElementById("discard-pile");
+  fetch("https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json")
+    .then(res => res.json())
+    .then(values => {
+      renderCards(values);
+    });
 
+  function renderCards(values) {
     values.forEach(value => {
       const card = document.createElement("div");
       card.className = "card";
@@ -140,30 +132,31 @@
 
       cardStack.appendChild(card);
     });
+  }
 
-    [keepPile, discardPile].forEach(pile => {
-      pile.addEventListener("dragover", (e) => {
-        e.preventDefault();
-      });
-      pile.addEventListener("drop", (e) => {
-        e.preventDefault();
-        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-        const card = document.querySelector(".dragging");
-        moveCard(card, pile, data.name, pile.id === "discard-pile");
-      });
+  [keepPile, discardPile].forEach(pile => {
+    pile.addEventListener("dragover", (e) => {
+      e.preventDefault();
     });
+    pile.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+      const card = document.querySelector(".dragging");
+      moveCard(card, pile, data.name, pile.id === "discard-pile");
+    });
+  });
 
-    function moveCard(card, pile, name, isDiscard) {
-      card.classList.remove("dragging");
-      card.remove();
-      const newCard = document.createElement("div");
-      newCard.className = "card";
-      newCard.innerHTML = isDiscard ? `<div class='card-title'>${name}</div>` : `<div class='card-title'>${name}</div>`;
-      newCard.style.width = isDiscard ? "200px" : "auto";
-      newCard.style.height = isDiscard ? "40px" : "auto";
-      newCard.style.fontSize = "0.85em";
-      pile.appendChild(newCard);
-    }
-  </script>
+  function moveCard(card, pile, name, isDiscard) {
+    card.classList.remove("dragging");
+    card.remove();
+    const newCard = document.createElement("div");
+    newCard.className = "card";
+    newCard.innerHTML = `<div class='card-title'>${name}</div>`;
+    newCard.style.width = isDiscard ? "200px" : "auto";
+    newCard.style.height = isDiscard ? "40px" : "auto";
+    newCard.style.fontSize = "0.85em";
+    pile.appendChild(newCard);
+  }
+</script>
 </body>
 </html>
