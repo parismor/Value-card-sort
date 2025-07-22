@@ -1,0 +1,286 @@
+[
+  {
+    "name": "Accountability",
+    "desc": "Taking responsibility for one's actions and their outcomes."
+  },
+  {
+    "name": "Adaptability",
+    "desc": "Embracing change and adjusting strategies to meet evolving demands."
+  },
+  {
+    "name": "Altruism",
+    "desc": "Selflessly concerned for the well-being of others."
+  },
+  {
+    "name": "Authenticity",
+    "desc": "Being true to one's own personality, spirit, or character."
+  },
+  {
+    "name": "Balance",
+    "desc": "Maintaining a healthy equilibrium between various aspects of life."
+  },
+  {
+    "name": "Bravery",
+    "desc": "Facing fear, danger, or adversity with courage."
+  },
+  {
+    "name": "Caring",
+    "desc": "Displaying kindness and concern for the well-being of others and being attentive to their needs."
+  },
+  {
+    "name": "Clarity",
+    "desc": "Achieving mental clarity and purpose in actions and decisions."
+  },
+  {
+    "name": "Collaboration",
+    "desc": "Working effectively with others to achieve common goals."
+  },
+  {
+    "name": "Commitment",
+    "desc": "Dedication to maintaining long-term connections in relationships or professional settings."
+  },
+  {
+    "name": "Compassion",
+    "desc": "Showing empathy and concern for the sufferings of others."
+  },
+  {
+    "name": "Competence",
+    "desc": "Striving for excellence and continuous improvement in skills."
+  },
+  {
+    "name": "Confidence",
+    "desc": "Belief in one's abilities and judgment."
+  },
+  {
+    "name": "Consistency",
+    "desc": "Acting in the same way over time, demonstrating reliability."
+  },
+  {
+    "name": "Courage",
+    "desc": "The ability to confront fear, pain, danger, uncertainty, or other forms of intimidation."
+  },
+  {
+    "name": "Creativity",
+    "desc": "Applying innovative thinking to problem-solving and idea generation."
+  },
+  {
+    "name": "Curiosity",
+    "desc": "Maintaining a strong desire to learn and explore new concepts."
+  },
+  {
+    "name": "Customer-Centricity",
+    "desc": "Prioritising the needs and satisfaction of clients or customers."
+  },
+  {
+    "name": "Discipline",
+    "desc": "Training oneself to follow a particular code of behaviour."
+  },
+  {
+    "name": "Diversity & Inclusion",
+    "desc": "Fostering an environment where all individuals are valued and respected."
+  },
+  {
+    "name": "Empathy",
+    "desc": "Understanding and sharing the feelings of others to build strong relationships."
+  },
+  {
+    "name": "Empowerment",
+    "desc": "Granting oneself or others the authority or power to do something."
+  },
+  {
+    "name": "Entrepreneurship",
+    "desc": "Taking initiative and risks to create new opportunities."
+  },
+  {
+    "name": "Ethical Integrity",
+    "desc": "Upholding moral principles and honesty in all actions."
+  },
+  {
+    "name": "Fairness",
+    "desc": "Treating all people or situations with justice and equity."
+  },
+  {
+    "name": "Financial Independence",
+    "desc": "Striving for autonomy and control over personal finances."
+  },
+  {
+    "name": "Flexibility",
+    "desc": "Willingness to adapt to new, different, or changing requirements."
+  },
+  {
+    "name": "Forgiveness",
+    "desc": "Letting go of resentment or anger against someone for an offence."
+  },
+  {
+    "name": "Generosity",
+    "desc": "Willingness to share resources and wealth with others."
+  },
+  {
+    "name": "Gratitude",
+    "desc": "Recognising and appreciating the good things in life."
+  },
+  {
+    "name": "Growth",
+    "desc": "Developing physically, mentally, or emotionally."
+  },
+  {
+    "name": "Healing",
+    "desc": "Both physical and emotional healing, often sought through spiritual practices."
+  },
+  {
+    "name": "Honesty",
+    "desc": "Being truthful and transparent in all dealings."
+  },
+  {
+    "name": "Humility",
+    "desc": "Having a modest view of one's importance."
+  },
+  {
+    "name": "Independence",
+    "desc": "Self-sufficiency and freedom from reliance on others."
+  },
+  {
+    "name": "Innovation",
+    "desc": "Introducing new ideas, workflows, methodologies, or products."
+  },
+  {
+    "name": "Integrity",
+    "desc": "Adherence to moral and ethical principles."
+  },
+  {
+    "name": "Investment Mindset",
+    "desc": "Focusing on long-term growth and planning for financial stability."
+  },
+  {
+    "name": "Kindness",
+    "desc": "The quality of being friendly, generous, and considerate."
+  },
+  {
+    "name": "Learning",
+    "desc": "Acquiring knowledge or skills through experience or study."
+  },
+  {
+    "name": "Learning Agility",
+    "desc": "Quickly understanding and applying new skills and knowledge."
+  },
+  {
+    "name": "Material Success",
+    "desc": "Defining personal success partly by wealth and material assets."
+  },
+  {
+    "name": "Mentorship",
+    "desc": "Providing guidance and support to less experienced colleagues."
+  },
+  {
+    "name": "Mindfulness",
+    "desc": "The quality or state of being conscious or aware of something."
+  },
+  {
+    "name": "Mutual Growth",
+    "desc": "Supporting one another's development both personally and professionally."
+  },
+  {
+    "name": "Networking",
+    "desc": "Building and maintaining professional relationships for mutual benefit."
+  },
+  {
+    "name": "Optimism",
+    "desc": "Hopefulness and confidence about the future."
+  },
+  {
+    "name": "Ownership",
+    "desc": "Taking responsibility for one's work and its outcomes."
+  },
+  {
+    "name": "Patience",
+    "desc": "The capacity to accept or tolerate delay, trouble, or suffering without getting angry or upset."
+  },
+  {
+    "name": "Peace",
+    "desc": "A focus on inner tranquillity and harmony in life and work."
+  },
+  {
+    "name": "Recognition",
+    "desc": "Acknowledging and appreciating the contributions of others."
+  },
+  {
+    "name": "Perseverance",
+    "desc": "Persistence in doing something despite difficulty or delay in achieving success."
+  },
+  {
+    "name": "Performance Excellence",
+    "desc": "Consistently achieving high standards in all tasks."
+  },
+  {
+    "name": "Protection",
+    "desc": "Taking steps to safeguard oneself, others, and the environment."
+  },
+  {
+    "name": "Purpose",
+    "desc": "Seeking meaning and fulfilment beyond material wealth, often driven by faith or spirituality."
+  },
+  {
+    "name": "Respect",
+    "desc": "A feeling of deep admiration for someone or something elicited by their abilities, qualities, or achievements."
+  },
+  {
+    "name": "Resourcefulness",
+    "desc": "Maximising available resources to achieve goals, including wealth-building."
+  },
+  {
+    "name": "Resilience",
+    "desc": "Bouncing back from setbacks and maintaining focus on goals."
+  },
+  {
+    "name": "Reverence",
+    "desc": "A deep respect for people, nature, and spiritual beliefs."
+  },
+  {
+    "name": "Risk-Taking",
+    "desc": "Willingness to engage in actions that have potential for significant outcomes."
+  },
+  {
+    "name": "Ritual",
+    "desc": "The observance of religious or spiritual practices as a way to maintain connection with the divine."
+  },
+  {
+    "name": "Security",
+    "desc": "Ensuring safety and protection for oneself and loved ones, financially and emotionally."
+  },
+  {
+    "name": "Service",
+    "desc": "Focusing on helping others, often rooted in religious or spiritual beliefs."
+  },
+  {
+    "name": "Sociability",
+    "desc": "Building relationships and networks through positive social interactions."
+  },
+  {
+    "name": "Social Equity",
+    "desc": "Ensuring fair treatment for all individuals."
+  },
+  {
+    "name": "Sustainability",
+    "desc": "Committing to practices that do not deplete resources or harm natural cycles."
+  },
+  {
+    "name": "Stability",
+    "desc": "Prioritising financial and emotional stability as a foundation for success."
+  },
+  {
+    "name": "Transparency",
+    "desc": "Operating in a way that actions are open and clear to others."
+  },
+  {
+    "name": "Trust",
+    "desc": "The foundation of all healthy relationships, built on honesty and dependability."
+  },
+  {
+    "name": "Wealth Creation",
+    "desc": "Actively seeking ways to build wealth and improve financial status."
+  },
+  {
+    "name": "Well-being",
+    "desc": "Focusing on health, happiness, and life satisfaction."
+  }
+]
