@@ -108,9 +108,10 @@
 
     #keep-pile,
     #discard-pile {
-      flex: 1 1 250px;
+      flex: 1 1 350px;
       min-height: 500px;
       display: flex;
+      flex-wrap: wrap;
       flex-wrap: wrap;
       justify-content: flex-start;
       align-items: flex-start;
@@ -118,6 +119,8 @@
       border-radius: 12px;
       background-color: #202622;
       box-sizing: border-box;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .pile h3 {
@@ -132,7 +135,7 @@
       position: relative;
       width: 110px;
       height: 110px;
-      font-size: 0.6rem;
+      font-size: 0.4rem;
       line-height: 1.1;
       margin: 4px;
       padding: 6px;
