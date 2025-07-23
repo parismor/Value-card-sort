@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,223 +5,234 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Value Card Sort</title>
   <style>
-  body {
-    margin: 0;
-    font-family: sans-serif;
-    background-color: #252A26; 
-    color: #202622;
-  }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #252A26;
+      color: #202622;
+    }
 
-  #instructions {
-    text-align: center;
-    padding: 20px;
-    font-size: 1rem;
-    color: #F2E1C2;
-    max-width: 800px;
-    margin: 0 auto;
-  }
+    #instructions {
+      text-align: center;
+      padding: 20px;
+      font-size: 1rem;
+      color: #F2E1C2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
 
-  #main-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
-    box-sizing: border-box;
-  }
+    #main-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-  #card-stack {
-    position: relative;
-    height: 400px;
-    width: 300px;
-    margin: auto;
-  }
+    #card-stack {
+      flex: 1 1 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 400px;
+      min-width: 300px;
+    }
 
-  #card-stack .card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(0, 0);
-    transition: transform 0.2s ease;
-  }
+    .card {
+      position: relative;
+      z-index: 1;
+      border-radius: 12px;
+      background-color: #F2E1C2;
+      color: #202622;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 220px;
+      padding: 16px;
+      margin: 8px;
+      box-sizing: border-box;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
 
-  #card-stack .card:nth-child(n) {
-    transform: translateY(calc(var(--i, 0) * 2px));
-  }
+    .card-title {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
 
-  .card {
-    position: relative;
-    border-radius: 12px;
-    background-color: #F2E1C2;
-    color: #202622;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    width: 220px;
-    height: auto;
-    padding: 16px;
-    margin: 8px;
-    box-sizing: border-box;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-  }
+    .card-desc {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
 
-  .card-title {
-    font-weight: bold;
-    font-size: 1rem;
-    margin-bottom: 6px;
-  }
+    .card::before,
+    .card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 25%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-  .card-desc {
-    font-size: 0.85rem;
-    opacity: 0.85;
-  }
+    .card::before {
+      left: 0;
+    }
 
-  #keep-pile,
-  #discard-pile {
-    flex: 1 1 40%;
-    min-height: 150px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 10px;
-    border-radius: 12px;
-    background-color: #202622;
-    box-sizing: border-box;
-  }
+    .card::after {
+      right: 0;
+    }
 
-  #keep-pile {
-    margin-left: 20px;
-  }
+    .card:hover::before {
+      background-color: #B98E6A;
+    }
 
-  #discard-pile {
-    margin-right: 20px;
-  }
+    .card:hover::after {
+      background-color: #A8D5A0;
+    }
 
-  .pile h3 {
-    color: #F2E1C2;
-    font-weight: normal;
-    margin-bottom: 10px;
-    font-size: 1rem;
-  }
+    #keep-pile,
+    #discard-pile {
+      flex: 1 1 250px;
+      min-height: 150px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 10px;
+      border-radius: 12px;
+      background-color: #202622;
+      box-sizing: border-box;
+    }
 
-  .card::before,
-  .card::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 25%;
-    transition: background-color 0.2s ease;
-    z-index: 0;
-  }
+    #keep-pile {
+      margin-left: 20px;
+    }
 
-  .card::before {
-    left: 0;
-  }
+    #discard-pile {
+      margin-right: 20px;
+    }
 
-  .card::after {
-    right: 0;
-  }
-  .card:hover::before {
-  background-color: #B98E6A; 
-}
+    .pile h3 {
+      color: #F2E1C2;
+      font-weight: normal;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
 
-.card:hover::after {
-  background-color: #A8D5A0; 
-}
-</style>
+    @media (max-width: 768px) {
+      #main-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #discard-pile,
+      #keep-pile {
+        width: 90%;
+      }
+
+      #card-stack {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Work Value Card Sort</h1>
-<div id="main-container">
-  <div id="discard-pile" class="pile">
-    <h3>Discard</h3>
+  <div id="instructions">
+    Select the values that resonate with you most.<br />
+    Click the right side of a card or drag it to the right to keep it.<br />
+    Click the left side or drag left to discard it.
   </div>
 
-  <div id="card-stack"></div>
-
-  <div id="keep-pile" class="pile">
-    <h3>Keep</h3>
+  <div id="main-container">
+    <div id="discard-pile" class="pile">
+      <h3>Discard</h3>
+    </div>
+    <div id="card-stack"></div>
+    <div id="keep-pile" class="pile">
+      <h3>Keep</h3>
+    </div>
   </div>
-</div>
 
-<script>
-  const cardStack = document.getElementById("card-stack");
-  const keepPile = document.getElementById("keep-pile");
-  const discardPile = document.getElementById("discard-pile");
-
-  fetch("https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json")
-    .then(res => res.json())
-    .then(values => {
-      renderCards(values);
-    });
-
-  function renderCards(values) {
-    values.forEach((value, index) => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.style.setProperty("--i", index);
-      card.draggable = true;
-      card.innerHTML = `<div class='card-title'>${value.name}</div><div class='card-desc'>${value.desc}</div>`;
-
-      card.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", JSON.stringify(value));
-        e.dataTransfer.effectAllowed = "move";
-        card.classList.add("dragging");
+  <script>
+    fetch("https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json")
+      .then(res => res.json())
+      .then(values => {
+        renderCards(values);
       });
 
-      card.addEventListener("click", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const action = x < rect.width / 4 ? "discard" : (x > rect.width * 3 / 4 ? "keep" : null);
-        if (action === "keep") moveCard(card, keepPile, value.name, false);
-        else if (action === "discard") moveCard(card, discardPile, value.name, true);
+    function renderCards(values) {
+      const cardStack = document.getElementById("card-stack");
+      values.forEach((value, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.setProperty('--i', index);
+        card.draggable = true;
+        card.innerHTML = `<div class='card-title'>${value.name}</div><div class='card-desc'>${value.desc}</div>`;
+
+        card.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", JSON.stringify(value));
+          e.dataTransfer.effectAllowed = "move";
+          card.classList.add("dragging");
+        });
+
+        card.addEventListener("click", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const action = x < rect.width / 4 ? "discard" : (x > rect.width * 3 / 4 ? "keep" : null);
+          if (action === "keep") moveCard(card, keepPile, value.name, false);
+          else if (action === "discard") moveCard(card, discardPile, value.name, true);
+        });
+
+        cardStack.appendChild(card);
       });
+    }
 
-      cardStack.appendChild(card);
+    const cardStack = document.getElementById("card-stack");
+    const keepPile = document.getElementById("keep-pile");
+    const discardPile = document.getElementById("discard-pile");
+
+    [keepPile, discardPile].forEach(pile => {
+      pile.addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+      pile.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+        const card = document.querySelector(".dragging");
+        moveCard(card, pile, data.name, pile.id === "discard-pile");
+      });
     });
-  }
 
-  [keepPile, discardPile].forEach(pile => {
-    pile.addEventListener("dragover", (e) => {
-      e.preventDefault();
-    });
-    pile.addEventListener("drop", (e) => {
-      e.preventDefault();
-      const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-      const card = document.querySelector(".dragging");
-      moveCard(card, pile, data.name, pile.id === "discard-pile");
-    });
-  });
-function moveCard(card, pile, name, isDiscard) {
-  card.classList.remove("dragging");
-  card.remove();
-
-  const newCard = document.createElement("div");
-  newCard.className = "card";
-
-  newCard.innerHTML = `<div class='card-title'>${name}</div>`;
-
-  newCard.style.width = "100px";
-  newCard.style.height = "100px";
-  newCard.style.margin = "6px";
-  newCard.style.display = "inline-block";
-  newCard.style.verticalAlign = "top";
-  newCard.style.textAlign = "center";
-  newCard.style.fontSize = "0.8em";
-  newCard.style.padding = "5px";
-  newCard.style.background = "#F2E1C2";
-  newCard.style.borderRadius = "12px";
-  newCard.style.boxSizing = "border-box";
-
-  pile.appendChild(newCard);
-}
-</script>
+    function moveCard(card, pile, name, isDiscard) {
+      card.classList.remove("dragging");
+      card.remove();
+      const newCard = document.createElement("div");
+      newCard.className = "card";
+      newCard.innerHTML = `<div class='card-title'>${name}</div>`;
+      newCard.style.width = "100px";
+      newCard.style.height = "100px";
+      newCard.style.margin = "6px";
+      newCard.style.display = "inline-block";
+      newCard.style.verticalAlign = "top";
+      newCard.style.textAlign = "center";
+      newCard.style.fontSize = "0.8em";
+      newCard.style.padding = "5px";
+      newCard.style.background = "#F2E1C2";
+      newCard.style.borderRadius = "12px";
+      newCard.style.boxSizing = "border-box";
+      pile.appendChild(newCard);
+    }
+  </script>
 </body>
 </html>
