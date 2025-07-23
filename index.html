@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Value Card Sort</title>
   <style>
+    /* Base font-size for rem units */
+    html { font-size: 16px; }
     body {
       margin: 0;
       font-family: sans-serif;
@@ -12,6 +14,7 @@
       color: #202622;
     }
 
+    /* Instructions */
     #instructions {
       text-align: center;
       padding: 20px;
@@ -24,35 +27,36 @@
       margin-bottom: 10px;
     }
 
+    /* Overall layout */
     #main-container {
       display: flex;
-      flex-wrap: nowrap;
       justify-content: center;
       align-items: flex-start;
+      gap: 8px;
       padding: 5px;
-      gap: 10px;
       box-sizing: border-box;
     }
 
+    /* Central stacked deck */
     #card-stack {
-      flex: 1 1 300px;
       position: relative;
+      width: 260px;
       height: 500px;
+      overflow: hidden;
       background-color: #252A26;
-      margin: 0 10px;
+      flex: 0 0 auto;
     }
     .card {
       position: absolute;
       top: 0;
       left: 50%;
-      transform: translateX(-50%) translateY(calc(var(--i) * 5px));
+      transform: translateX(-50%) translateY(calc(var(--i) * 2px));
+      width: 260px;
+      padding: 16px;
       border-radius: 12px;
-      background-color: #F2E1C2;
+      background: #F2E1C2;
       color: #202622;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      width: 220px;
-      padding: 16px;
-      box-sizing: border-box;
       cursor: pointer;
       user-select: none;
       transition: background-color 0.2s ease, transform 0.2s ease;
@@ -64,145 +68,101 @@
     }
     .card-title { font-weight: bold; font-size: 1rem; margin-bottom: 6px; }
     .card-desc { font-size: 0.85rem; opacity: 0.85; }
-
     .card::before,
     .card::after {
       content: "";
       position: absolute;
-      top: 0;
-      bottom: 0;
+      top: 0; bottom: 0;
       width: 25%;
+      z-index: -1;
       pointer-events: none;
     }
-    .card::before { left: 0; z-index: 0; }
-    .card::after  { right: 0; z-index: 0; }
-    .card:hover::before { background-color: rgba(185, 142, 106, 0.3); }
-    .card:hover::after  { background-color: rgba(168, 213, 160, 0.3); }
+    .card::before { left: 0; }
+    .card::after { right: 0; }
+    .card:hover::before { background-color: rgba(185,142,106,0.3); }
+    .card:hover::after  { background-color: rgba(168,213,160,0.3); }
 
-    #keep-pile,
-    #discard-pile {
-      flex: 1 1 320px;
+    /* Pile containers as grid */
+    #discard-pile, #keep-pile {
+      width: 380px;
       min-height: 500px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      align-items: flex-start;
-      padding: 6px;
-      gap: 6px;
+      background: #202622;
       border-radius: 12px;
-      background-color: #202622;
+      padding: 0;
       box-sizing: border-box;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      grid-auto-rows: 120px;
+      gap: 4px;
       overflow-y: auto;
-      overflow-x: hidden;
     }
     .pile h3 {
+      grid-column: 1 / -1;
+      margin: 4px 0;
+      padding: 0 4px;
       color: #F2E1C2;
-      font-weight: normal;
-      margin: 0 0 10px 0;
       font-size: 1rem;
-      width: 100%;
+      font-weight: normal;
+      text-align: left;
     }
     .pile .card {
       position: relative;
-      width: 120px;
-      height: 120px;
-      font-size: 0.65rem;
-      line-height: 1.1;
-      margin: 4px;
-      padding: 6px;
+      margin: 0;
+      width: auto;
+      height: auto;
+      padding: 4px;
+      font-size: 0.6rem;
+      line-height: 1.2;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      box-sizing: border-box;
       word-wrap: break-word;
       hyphens: auto;
+      background: #F2E1C2;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     @media (max-width: 768px) {
-      #main-container {
-        flex-direction: column;
-        align-items: center;
-      }
-      #discard-pile,
-      #keep-pile {
-        width: 90%;
-        min-height: 200px;
-      }
-      #card-stack {
-        width: 100%;
-        margin-bottom: 20px;
-      }
+      #main-container { flex-direction: column; align-items: center; }
+      #discard-pile, #keep-pile { width: 90%; }
+      #card-stack { width: 100%; margin-bottom: 20px; }
     }
   </style>
 </head>
 <body>
   <div id="instructions">
     <h2>Value Card Sort Activity: Select the values that resonate with you most.</h2>
-    Click the right side of a card or drag it to the right pile to keep it.<br />
+    Click the right side of a card or drag it to the right pile to keep it.<br>
     Click the left side or drag it to left pile to discard it.
   </div>
-
   <div id="main-container">
     <div id="discard-pile" class="pile"><h3>Discard</h3></div>
     <div id="card-stack"></div>
     <div id="keep-pile" class="pile"><h3>Keep</h3></div>
   </div>
-
   <script>
-    const keepPile = document.getElementById("keep-pile");
-    const discardPile = document.getElementById("discard-pile");
-    const cardStack = document.getElementById("card-stack");
-
-    fetch("https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json")
-      .then(res => res.json())
-      .then(values => renderCards(values));
-
+    const discardPile = document.getElementById('discard-pile');
+    const keepPile = document.getElementById('keep-pile');
+    const cardStack = document.getElementById('card-stack');
+    fetch('https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json')
+      .then(r => r.json()).then(values => renderCards(values));
     function renderCards(values) {
-      cardStack.innerHTML = "";
-      values.forEach((value, index) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.style.setProperty("--i", index);
-        card.draggable = true;
-        card.innerHTML = `<div class='card-title'>${value.name}</div><div class='card-desc'>${value.desc}</div>`;
-        card.style.zIndex = values.length - index;
-
-        card.addEventListener("dragstart", e => {
-          e.dataTransfer.setData("text/plain", JSON.stringify(value));
-          e.dataTransfer.effectAllowed = "move";
-          card.classList.add("dragging");
-        });
-        card.addEventListener("click", e => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const action = x < rect.width / 4 ? "discard" : x > rect.width * 3 / 4 ? "keep" : null;
-          if (action === "keep") moveCard(card, keepPile, value.name);
-          else if (action === "discard") moveCard(card, discardPile, value.name);
-        });
-
-        cardStack.appendChild(card);
+      cardStack.innerHTML='';
+      values.forEach((v,i)=>{
+        const c=document.createElement('div');c.className='card';
+        c.style.setProperty('--i',i);
+        c.draggable=true;
+        c.innerHTML=`<div class='card-title'>${v.name}</div><div class='card-desc'>${v.desc}</div>`;
+        c.style.zIndex=values.length-i;
+        c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',JSON.stringify(v));c.classList.add('dragging');});
+        c.addEventListener('click',e=>{const x=e.clientX-c.getBoundingClientRect().left; if(x<c.offsetWidth/4) move(c,discardPile,v.name); else if(x>c.offsetWidth*3/4) move(c,keepPile,v.name);});
+        cardStack.appendChild(c);
       });
     }
-
-    [keepPile, discardPile].forEach(pile => {
-      pile.addEventListener("dragover", e => e.preventDefault());
-      pile.addEventListener("drop", e => {
-        e.preventDefault();
-        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-        const dragging = document.querySelector(".dragging");
-        moveCard(dragging, pile, data.name);
-      });
-    });
-
-    function moveCard(card, pile, name) {
-      card.classList.remove("dragging");
-      card.remove();
-      const newCard = document.createElement("div");
-      newCard.className = "card";
-      newCard.innerHTML = `<div class='card-title'>${name}</div>`;
-      pile.appendChild(newCard);
-    }
+    [discardPile,keepPile].forEach(p=>{p.addEventListener('dragover',e=>e.preventDefault());p.addEventListener('drop',e=>{e.preventDefault();const d=JSON.parse(e.dataTransfer.getData('text/plain'));move(document.querySelector('.dragging'),p,d.name);});});
+    function move(card,pile,name){card.classList.remove('dragging');card.remove();const nc=document.createElement('div');nc.className='card';nc.innerHTML=`<div class='card-title'>${name}</div>`;pile.appendChild(nc);}
   </script>
 </body>
 </html>
