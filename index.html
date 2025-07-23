@@ -23,34 +23,34 @@
 
     #main-container {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 20px;
       padding: 20px;
+      gap: 20px;
       box-sizing: border-box;
     }
 
     #card-stack {
       flex: 1 1 300px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      height: 400px;
-      min-width: 300px;
+      justify-content: flex-start;
+      gap: 10px;
+      height: 500px;
+      overflow-y: auto;
+      background-color: #252A26;
     }
 
     .card {
       position: relative;
-      z-index: 1;
       border-radius: 12px;
       background-color: #F2E1C2;
       color: #202622;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       width: 220px;
       padding: 16px;
-      margin: 8px;
       box-sizing: border-box;
       cursor: pointer;
       user-select: none;
@@ -103,7 +103,7 @@
     #keep-pile,
     #discard-pile {
       flex: 1 1 250px;
-      min-height: 150px;
+      min-height: 500px;
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
@@ -114,19 +114,12 @@
       box-sizing: border-box;
     }
 
-    #keep-pile {
-      margin-left: 20px;
-    }
-
-    #discard-pile {
-      margin-right: 20px;
-    }
-
     .pile h3 {
       color: #F2E1C2;
       font-weight: normal;
       margin-bottom: 10px;
       font-size: 1rem;
+      width: 100%;
     }
 
     @media (max-width: 768px) {
@@ -138,6 +131,7 @@
       #discard-pile,
       #keep-pile {
         width: 90%;
+        min-height: 200px;
       }
 
       #card-stack {
@@ -176,7 +170,6 @@
       values.forEach((value, index) => {
         const card = document.createElement("div");
         card.className = "card";
-        card.style.setProperty('--i', index);
         card.draggable = true;
         card.innerHTML = `<div class='card-title'>${value.name}</div><div class='card-desc'>${value.desc}</div>`;
 
@@ -198,7 +191,6 @@
       });
     }
 
-    const cardStack = document.getElementById("card-stack");
     const keepPile = document.getElementById("keep-pile");
     const discardPile = document.getElementById("discard-pile");
 
