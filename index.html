@@ -36,16 +36,23 @@
       padding: 5px;
       box-sizing: border-box;
     }
+/* Portrait ratio for all stacked cards (3 wide × 4 tall) */
+#card-stack .card {
+  width: 260px;            /* keep your existing width */
+  aspect-ratio: 3 / 4;     /* enforces height = width × 4/3 */
+  height: auto;            /* lets the aspect-ratio take over */
+}
 
     /* Central stacked deck */
     #card-stack {
       position: relative;
       width: 260px;
       height: 500px;
-      overflow: hidden;
+      overflow: visible;
       background-color: #252A26;
       flex: 0 0 auto;
       margin: 0 20px; /* space from piles */
+      border-radius: 12px;  
     }
     .card {
       position: absolute;
@@ -67,8 +74,8 @@
       text-align: center;
       z-index: 1;
     }
-    .card-title { font-weight: bold; font-size: 1rem; margin-bottom: 6px; }
-    .card-desc  { font-size: 0.85rem; opacity: 0.85; }
+    .card-title { font-weight: bold; font-size: 1.5rem; margin-bottom: 6px; }
+    .card-desc  { font-size: 0.9rem; opacity: 0.85; }
     .card::before,
     .card::after {
       content: "";
@@ -132,7 +139,9 @@
       border-radius: 12px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-
+.pile .card-title {
+  font-size: 0.9rem;       /* whatever size you like for pile cards */
+}
     @media (max-width: 768px) { (max-width: 768px) {
       #main-container {
         flex-direction: column;
