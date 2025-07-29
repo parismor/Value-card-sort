@@ -53,9 +53,9 @@
 
     .card {
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 50%;
-      transform: translateX(-50%) translateY(calc(var(--i) * 2px));
+      transform: translateX(-50%) translateY(calc(var(--i) * -2px));
       width: 260px;
       padding: 16px;
       border-radius: 12px;
@@ -98,7 +98,7 @@
       background: #202622;
       border-radius: 12px;
       box-sizing: border-box;
-      padding: 0;
+      padding-top: 24px;
       display: grid;
       grid-template-columns: repeat(auto-fit, 120px);
       grid-auto-rows: 120px;
@@ -115,6 +115,7 @@
     .pile h3 {
       position: absolute;
       top: 4px;
+      left: 4px;
       font-size: 1rem;
       font-weight: bold;
       padding: 0 8px;
@@ -123,14 +124,12 @@
     }
 
     #keep-pile h3 {
-      left: 4px;
       text-align: left;
       color: #A8D5A0;
     }
 
     #discard-pile h3 {
-      right: 4px;
-      text-align: right;
+      text-align: left;
       color: #B98E6A;
     }
 
@@ -142,6 +141,7 @@
       font-size: 0.6rem;
       line-height: 1.2;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
@@ -154,6 +154,12 @@
 
     .pile .card-title {
       font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .pile .card-desc {
+      font-size: 0.7rem;
+      opacity: 0.8;
     }
 
     @media (max-width: 768px) {
@@ -193,18 +199,14 @@
       .then(r => r.json())
       .then(values => renderCards(values));
 
-   function renderCards(values) {
-  cardStack.innerHTML = '';
+    function renderCards(values) {
+      cardStack.innerHTML = '';
 
-  // Sort A to Z
-  values.sort((a, b) => a.name.localeCompare(b.name));
-
-  // Reverse so A ends up on top of the stack (highest z-index)
-  values.reverse().forEach((v, i) => {
-    createCard(v.name, v.desc, cardStack, true);
-  });
-}
-
+      values.sort((a, b) => a.name.localeCompare(b.name));
+      values.forEach((v, i) => {
+        createCard(v.name, v.desc, cardStack, true);
+      });
+    }
 
     function createCard(name, desc, parent, isStacked) {
       const card = document.createElement('div');
@@ -222,8 +224,11 @@
         if (parent === keepPile && x < card.offsetWidth / 4) move(card, cardStack, name, desc);
         else if (parent === discardPile && x > card.offsetWidth * 3 / 4) move(card, cardStack, name, desc);
         else if (parent === cardStack) {
-          if (x < card.offsetWidth / 4) move(card, discardPile, name);
-          else if (x > card.offsetWidth * 3 / 4) move(card, keepPile, name);
+          const topCard = Array.from(cardStack.children).pop();
+          if (card === topCard) {
+            if (x < card.offsetWidth / 4) move(card, discardPile, name);
+            else if (x > card.offsetWidth * 3 / 4) move(card, keepPile, name);
+          }
         }
       });
 
@@ -233,8 +238,8 @@
         card.style.zIndex = cardStack.children.length - idx;
         card.style.position = 'absolute';
         card.style.left = '50%';
-        card.style.top = '0';
-        card.style.transform = 'translateX(-50%) translateY(calc(var(--i) * 2px))';
+        card.style.bottom = '0';
+        card.style.transform = 'translateX(-50%) translateY(calc(var(--i) * -2px))';
       }
 
       parent.appendChild(card);
