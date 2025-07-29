@@ -193,18 +193,18 @@
     fetch('https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json')
       .then(r => r.json())
       .then(values => {
-        values.sort((a, b) => a.name.localeCompare(b.name));
+        values.sort((a, b) => b.name.localeCompare(a.name)); // reversed alphabetical sort
         renderCards(values);
       });
 
     function renderCards(values) {
       cardStack.innerHTML = '';
       values.forEach((v, i) => {
-        createCard(v.name, v.desc, cardStack, true, i);
+        createCard(v.name, v.desc, cardStack, true);
       });
     }
 
-    function createCard(name, desc, parent, isStacked, index = 0) {
+    function createCard(name, desc, parent, isStacked) {
       const card = document.createElement('div');
       card.className = 'card';
       let content = `<div class='card-title'>${name}</div>`;
@@ -219,7 +219,7 @@
 
       card.addEventListener('click', e => {
         const x = e.clientX - card.getBoundingClientRect().left;
-        const topCard = Array.from(cardStack.children).find(el => el.style.zIndex == Math.max(...Array.from(cardStack.children).map(el => parseInt(el.style.zIndex) || 0)));
+        const topCard = Array.from(cardStack.children).find(el => parseInt(el.style.zIndex) === Math.max(...Array.from(cardStack.children).map(el => parseInt(el.style.zIndex) || 0)));
         if (parent === keepPile && x < card.offsetWidth / 4) move(card, cardStack, name, desc);
         else if (parent === discardPile && x > card.offsetWidth * 3 / 4) move(card, cardStack, name, desc);
         else if (parent === cardStack && card === topCard) {
@@ -229,7 +229,7 @@
       });
 
       if (isStacked) {
-        const newIndex = [...cardStack.children].length;
+        const newIndex = cardStack.children.length;
         card.style.setProperty('--i', newIndex);
         card.style.zIndex = 1000 + newIndex;
         card.style.position = 'absolute';
@@ -245,8 +245,7 @@
       card.classList.remove('dragging');
       card.remove();
       const isStacked = pile === cardStack;
-      const index = isStacked ? [...cardStack.children].length : 0;
-      createCard(name, desc, pile, isStacked, index);
+      createCard(name, desc, pile, isStacked);
     }
 
     [discardPile, keepPile].forEach(p => {
