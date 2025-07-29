@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Value Card Sort</title>
   <style>
-    /* Base font-size for rem units */
     html { font-size: 16px; }
     body {
       margin: 0;
@@ -14,7 +13,6 @@
       color: #202622;
     }
 
-    /* Instructions */
     #instructions {
       text-align: center;
       padding: 20px;
@@ -27,7 +25,6 @@
       margin-bottom: 10px;
     }
 
-    /* Overall layout */
     #main-container {
       display: flex;
       justify-content: center;
@@ -36,14 +33,13 @@
       padding: 5px;
       box-sizing: border-box;
     }
-/* Portrait ratio for all stacked cards (3 wide × 4 tall) */
-#card-stack .card {
-  width: 260px;            /* keep your existing width */
-  aspect-ratio: 3 / 4;     /* enforces height = width × 4/3 */
-  height: auto;            /* lets the aspect-ratio take over */
-}
 
-    /* Central stacked deck */
+    #card-stack .card {
+      width: 260px;
+      aspect-ratio: 3 / 4;
+      height: auto;
+    }
+
     #card-stack {
       position: relative;
       width: 260px;
@@ -51,9 +47,10 @@
       overflow: visible;
       background-color: #252A26;
       flex: 0 0 auto;
-      margin: 0 20px; /* space from piles */
-      border-radius: 12px;  
+      margin: 0 20px;
+      border-radius: 12px;
     }
+
     .card {
       position: absolute;
       top: 0;
@@ -74,8 +71,10 @@
       text-align: center;
       z-index: 1;
     }
+
     .card-title { font-weight: bold; font-size: 1.5rem; margin-bottom: 6px; }
     .card-desc  { font-size: 0.9rem; opacity: 0.85; }
+
     .card::before,
     .card::after {
       content: "";
@@ -85,12 +84,12 @@
       z-index: -1;
       pointer-events: none;
     }
+
     .card::before { left: 0; }
     .card::after  { right: 0; }
     .card:hover::before { background-color: rgba(185,142,106,0.3); }
     .card:hover::after  { background-color: rgba(168,213,160,0.3); }
 
-    /* Pile containers as responsive grid */
     #discard-pile,
     #keep-pile {
       width: 40vw;
@@ -104,22 +103,35 @@
       grid-template-columns: repeat(auto-fit, 120px);
       grid-auto-rows: 120px;
       justify-content: start;
-      gap: 12px; /* increased spacing between cards */
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
+      gap: 12px;
       overflow-y: auto;
       overflow-x: hidden;
     }
 
+    .pile {
+      position: relative;
+    }
+
     .pile h3 {
-      grid-column: 1 / -1;
-      margin: 4px 0;
-      padding: 0 4px;
-      color: #F2E1C2;
+      position: absolute;
+      top: 4px;
       font-size: 1rem;
-      font-weight: normal;
+      font-weight: bold;
+      padding: 0 8px;
+      z-index: 2;
+      margin: 0;
+    }
+
+    #keep-pile h3 {
+      left: 4px;
       text-align: left;
+      color: #A8D5A0;
+    }
+
+    #discard-pile h3 {
+      right: 4px;
+      text-align: right;
+      color: #B98E6A;
     }
 
     .pile .card {
@@ -139,10 +151,12 @@
       border-radius: 12px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-.pile .card-title {
-  font-size: 0.9rem;       /* whatever size you like for pile cards */
-}
-    @media (max-width: 768px) { (max-width: 768px) {
+
+    .pile .card-title {
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
       #main-container {
         flex-direction: column;
         align-items: center;
@@ -169,38 +183,85 @@
     <div id="card-stack"></div>
     <div id="keep-pile" class="pile"><h3>Keep</h3></div>
   </div>
+
   <script>
     const discardPile = document.getElementById('discard-pile');
     const keepPile    = document.getElementById('keep-pile');
     const cardStack   = document.getElementById('card-stack');
+
     fetch('https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json')
-      .then(r => r.json()).then(values => renderCards(values));
-    function renderCards(values) {
-      cardStack.innerHTML = '';
-      values.forEach((v, i) => {
-        const c = document.createElement('div');
-        c.className = 'card';
-        c.style.setProperty('--i', i);
-        c.draggable = true;
-        c.innerHTML = `<div class='card-title'>${v.name}</div><div class='card-desc'>${v.desc}</div>`;
-        c.style.zIndex = values.length - i;
-        c.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', JSON.stringify(v)); c.classList.add('dragging'); });
-        c.addEventListener('click', e => { const x = e.clientX - c.getBoundingClientRect().left; if (x < c.offsetWidth/4) move(c, discardPile, v.name); else if (x > c.offsetWidth*3/4) move(c, keepPile, v.name); });
-        cardStack.appendChild(c);
+      .then(r => r.json())
+      .then(values => renderCards(values));
+
+   function renderCards(values) {
+  cardStack.innerHTML = '';
+
+  // Sort A to Z
+  values.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Reverse so A ends up on top of the stack (highest z-index)
+  values.reverse().forEach((v, i) => {
+    createCard(v.name, v.desc, cardStack, true);
+  });
+}
+
+
+    function createCard(name, desc, parent, isStacked) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class='card-title'>${name}</div>${desc ? `<div class='card-desc'>${desc}</div>` : ''}`;
+      card.draggable = true;
+
+      card.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', JSON.stringify({ name, desc }));
+        card.classList.add('dragging');
       });
+
+      card.addEventListener('click', e => {
+        const x = e.clientX - card.getBoundingClientRect().left;
+        if (parent === keepPile && x < card.offsetWidth / 4) move(card, cardStack, name, desc);
+        else if (parent === discardPile && x > card.offsetWidth * 3 / 4) move(card, cardStack, name, desc);
+        else if (parent === cardStack) {
+          if (x < card.offsetWidth / 4) move(card, discardPile, name);
+          else if (x > card.offsetWidth * 3 / 4) move(card, keepPile, name);
+        }
+      });
+
+      if (isStacked) {
+        const idx = cardStack.children.length;
+        card.style.setProperty('--i', idx);
+        card.style.zIndex = cardStack.children.length - idx;
+        card.style.position = 'absolute';
+        card.style.left = '50%';
+        card.style.top = '0';
+        card.style.transform = 'translateX(-50%) translateY(calc(var(--i) * 2px))';
+      }
+
+      parent.appendChild(card);
     }
-    [discardPile, keepPile].forEach(p => {
-      p.addEventListener('dragover', e => e.preventDefault());
-      p.addEventListener('drop', e => { e.preventDefault(); const d = JSON.parse(e.dataTransfer.getData('text/plain')); move(document.querySelector('.dragging'), p, d.name); });
-    });
-    function move(card, pile, name) {
+
+    function move(card, pile, name, desc = '') {
       card.classList.remove('dragging');
       card.remove();
-      const nc = document.createElement('div');
-      nc.className = 'card';
-      nc.innerHTML = `<div class='card-title'>${name}</div>`;
-      pile.appendChild(nc);
+      const isStacked = pile === cardStack;
+      createCard(name, desc, pile, isStacked);
     }
+
+    [discardPile, keepPile].forEach(p => {
+      p.addEventListener('dragover', e => e.preventDefault());
+      p.addEventListener('drop', e => {
+        e.preventDefault();
+        const d = JSON.parse(e.dataTransfer.getData('text/plain'));
+        move(document.querySelector('.dragging'), p, d.name, d.desc);
+      });
+    });
+
+    cardStack.addEventListener("dragover", e => e.preventDefault());
+    cardStack.addEventListener("drop", e => {
+      e.preventDefault();
+      const d = JSON.parse(e.dataTransfer.getData("text/plain"));
+      move(document.querySelector(".dragging"), cardStack, d.name, d.desc);
+    });
   </script>
 </body>
 </html>
