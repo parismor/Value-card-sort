@@ -98,7 +98,7 @@
       background: #202622;
       border-radius: 12px;
       box-sizing: border-box;
-      padding-top: 24px;
+      padding-top: 60px;
       display: grid;
       grid-template-columns: repeat(auto-fit, 120px);
       grid-auto-rows: 120px;
@@ -157,11 +157,6 @@
       font-weight: bold;
     }
 
-    .pile .card-desc {
-      font-size: 0.7rem;
-      opacity: 0.8;
-    }
-
     @media (max-width: 768px) {
       #main-container {
         flex-direction: column;
@@ -197,21 +192,24 @@
 
     fetch('https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json')
       .then(r => r.json())
-      .then(values => renderCards(values));
+      .then(values => {
+        values.sort((a, b) => a.name.localeCompare(b.name));
+        renderCards(values);
+      });
 
     function renderCards(values) {
       cardStack.innerHTML = '';
-
-      values.sort((a, b) => a.name.localeCompare(b.name));
       values.forEach((v, i) => {
-        createCard(v.name, v.desc, cardStack, true);
+        createCard(v.name, v.desc, cardStack, true, i);
       });
     }
 
-    function createCard(name, desc, parent, isStacked) {
+    function createCard(name, desc, parent, isStacked, index = 0) {
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `<div class='card-title'>${name}</div>${desc ? `<div class='card-desc'>${desc}</div>` : ''}`;
+      let content = `<div class='card-title'>${name}</div>`;
+      if (isStacked) content += `<div class='card-desc'>${desc}</div>`;
+      card.innerHTML = content;
       card.draggable = true;
 
       card.addEventListener('dragstart', e => {
@@ -221,21 +219,19 @@
 
       card.addEventListener('click', e => {
         const x = e.clientX - card.getBoundingClientRect().left;
+        const topCard = Array.from(cardStack.children).find(el => el.style.zIndex == Math.max(...Array.from(cardStack.children).map(el => parseInt(el.style.zIndex) || 0)));
         if (parent === keepPile && x < card.offsetWidth / 4) move(card, cardStack, name, desc);
         else if (parent === discardPile && x > card.offsetWidth * 3 / 4) move(card, cardStack, name, desc);
-        else if (parent === cardStack) {
-          const topCard = Array.from(cardStack.children).pop();
-          if (card === topCard) {
-            if (x < card.offsetWidth / 4) move(card, discardPile, name);
-            else if (x > card.offsetWidth * 3 / 4) move(card, keepPile, name);
-          }
+        else if (parent === cardStack && card === topCard) {
+          if (x < card.offsetWidth / 4) move(card, discardPile, name, desc);
+          else if (x > card.offsetWidth * 3 / 4) move(card, keepPile, name, desc);
         }
       });
 
       if (isStacked) {
-        const idx = cardStack.children.length;
-        card.style.setProperty('--i', idx);
-        card.style.zIndex = cardStack.children.length - idx;
+        const newIndex = [...cardStack.children].length;
+        card.style.setProperty('--i', newIndex);
+        card.style.zIndex = 1000 + newIndex;
         card.style.position = 'absolute';
         card.style.left = '50%';
         card.style.bottom = '0';
@@ -249,7 +245,8 @@
       card.classList.remove('dragging');
       card.remove();
       const isStacked = pile === cardStack;
-      createCard(name, desc, pile, isStacked);
+      const index = isStacked ? [...cardStack.children].length : 0;
+      createCard(name, desc, pile, isStacked, index);
     }
 
     [discardPile, keepPile].forEach(p => {
