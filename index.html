@@ -173,10 +173,8 @@
     }
 
     .next-button {
-      position: absolute;
-      top: 120px;
-      left: 50%;
-      transform: translateX(-50%);
+      display: none;
+      margin: 10px auto;
       padding: 8px 16px;
       background-color: #A8D5A0;
       color: #202622;
@@ -213,7 +211,10 @@
     Click the right side of a card or drag it to the right pile to keep it.<br>
     Click the left side or drag it to left pile to discard it.
   </div>
-  <button class="next-button" id="next-button" style="display:none">Next Step</button>
+  <div style="text-align: center;">
+    <button class="next-button" id="next-button">Next Step</button>
+    <button class="next-button" id="export-button" style="display:none">Save and Export</button>
+  </div>
   <div id="main-container">
     <div id="discard-pile" class="pile"><h3>Discard</h3></div>
     <div id="card-stack"></div>
@@ -225,6 +226,7 @@
     const keepPile    = document.getElementById('keep-pile');
     const cardStack   = document.getElementById('card-stack');
     const nextBtn     = document.getElementById('next-button');
+    const exportBtn   = document.getElementById('export-button');
     const resetBtn    = document.getElementById('reset');
     let step = 1;
 
@@ -334,15 +336,27 @@
       if (step <= 4) {
         renderCards(selected);
       } else {
-        const content = selected.map(card => `${card.name}: ${card.desc}`).join('\n');
-        const blob = new Blob([content], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'top_values.txt';
-        link.click();
+        exportBtn.style.display = 'block';
+        nextBtn.style.display = 'none';
       }
 
       nextBtn.style.display = 'none';
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const selected = Array.from(keepPile.children).map(card => {
+        const titleEl = card.querySelector('.card-title');
+        if (!titleEl) return null;
+        const name = titleEl.textContent;
+        const desc = allValues.find(v => v.name === name)?.desc || '';
+        return `${name}: ${desc}`;
+      }).filter(Boolean).join('\n');
+
+      const blob = new Blob([selected], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'top_values.txt';
+      link.click();
     });
 
     resetBtn.addEventListener('click', () => location.reload());
