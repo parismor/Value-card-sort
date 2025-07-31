@@ -201,6 +201,7 @@
       }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <div class="top-bar">
@@ -352,21 +353,38 @@
   nextBtn.style.display = 'none';
 });
 
-    exportBtn.addEventListener('click', () => {
-      const selected = Array.from(keepPile.children).map(card => {
-        const titleEl = card.querySelector('.card-title');
-        if (!titleEl) return null;
-        const name = titleEl.textContent;
-        const desc = allValues.find(v => v.name === name)?.desc || '';
-        return `${name}: ${desc}`;
-      }).filter(Boolean).join('\n');
+exportBtn.addEventListener('click', () => {
+  const selected = Array.from(keepPile.children).map(card => {
+    const titleEl = card.querySelector('.card-title');
+    if (!titleEl) return null;
+    const name = titleEl.textContent;
+    const desc = allValues.find(v => v.name === name)?.desc || '';
+    return { name, desc };
+  }).filter(Boolean);
 
-      const blob = new Blob([selected], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'top_values.txt';
-      link.click();
-    });
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 20;
+
+  selected.forEach(({ name, desc }) => {
+    if (y > 270) { // create new page if near bottom
+      doc.addPage();
+      y = 20;
+    }
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(name, 20, y);
+    y += 8;
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    const lines = doc.splitTextToSize(desc, 170);
+    doc.text(lines, 20, y);
+    y += lines.length * 7 + 5;
+  });
+
+  doc.save('top_values.pdf');
+});
 
     resetBtn.addEventListener('click', () => location.reload());
   </script>
