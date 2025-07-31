@@ -207,11 +207,13 @@
   <div class="top-bar">
     <button id="reset">Start Over</button>
   </div>
-  <div id="instructions">
-    <h2>Value Card Sort Activity: Select the values that resonate with you most.</h2>
+ <div id="instructions">
+  <h2 id="step-title">Value Card Sort Activity: Select the values that resonate with you most.</h2>
+  <p id="step-desc">
     Click the right side of a card or drag it to the right pile to keep it.<br>
-    Click the left side or drag it to left pile to discard it.
-  </div>
+    Click the left side or drag it to the left pile to discard it.
+  </p>
+</div>
   <div style="text-align: center;">
     <button class="next-button" id="next-button">Next Step</button>
     <button class="next-button" id="export-button" style="display:none">Save and Export</button>
@@ -230,7 +232,8 @@
     const exportBtn   = document.getElementById('export-button');
     const resetBtn    = document.getElementById('reset');
     let step = 1;
-
+    const stepTitle = document.getElementById('step-title');
+    const stepDesc = document.getElementById('step-desc');
     let allValues = [];
 
     fetch('https://raw.githubusercontent.com/parismor/Value-card-sort/main/value_cards.json')
@@ -286,7 +289,10 @@
 
     function move(card, pile, name, desc = '') {
       const max = step === 2 ? 20 : step === 3 ? 10 : step === 4 ? 5 : Infinity;
-      if (pile === keepPile && keepPile.children.length >= max) return;
+     if (
+        pile === keepPile &&
+        Array.from(keepPile.children).filter(el => el.tagName !== 'H3').length >= max
+        ) return;
       card.classList.remove('dragging');
       card.remove();
       const isStacked = pile === cardStack;
@@ -294,20 +300,36 @@
       checkProgress();
     }
 
-    function checkProgress() {
+  function checkProgress() {
   const allMoved = cardStack.children.length === 0;
-  const keepCount = keepPile.children.length;
+  const keepCount = Array.from(keepPile.children).filter(el => el.tagName !== 'H3').length;
+
+
+  // Update title and description
+  if (step === 1) {
+    stepTitle.textContent = 'Value Card Sort Activity: Select the values that resonate with you most.';
+    stepDesc.innerHTML = 'Click the right side of a card or drag it to the right pile to keep it.<br>Click the left side or drag it to the left pile to discard it.';
+  } else if (step === 2) {
+    stepTitle.textContent = 'Your Top 15–20 Values';
+    stepDesc.textContent = 'Now, from your selected pile of cards, choose your top 15–20 values.';
+  } else if (step === 3) {
+    stepTitle.textContent = 'Your Top 8–10 Values';
+    stepDesc.textContent = 'Time to dig deeper. Choose your top 8–10 values.';
+  } else if (step === 4) {
+    stepTitle.textContent = 'Your Top 3–5 Values';
+    stepDesc.textContent = 'In this final step, we ask you to think about your selected values again and choose the most important and non-negotiable 3–5 values. Once ready, click Save and Export to get a copy of your top-selected values.';
+  }
 
   const showNext =
     (step === 1 && allMoved) ||
-    (step === 2 && keepCount === 20) ||
-    (step === 3 && keepCount === 10);
+    (step === 2 && keepCount >= 15 && keepCount <= 20) ||
+    (step === 3 && keepCount >= 8 && keepCount <= 10) ||
+    (step === 4 && keepCount >= 3 && keepCount <= 5);
 
-  const showExport = (step === 4 && keepCount >= 3);
-
-  nextBtn.style.display = showNext ? 'block' : 'none';
-  exportBtn.style.display = showExport ? 'block' : 'none';
+  nextBtn.style.display = (step < 4 && showNext) ? 'block' : 'none';
+  exportBtn.style.display = (step === 4 && showNext) ? 'block' : 'none';
 }
+
 
     [discardPile, keepPile].forEach(p => {
       p.addEventListener('dragover', e => e.preventDefault());
@@ -336,8 +358,13 @@
 
   step++;
   cardStack.innerHTML = '';
-  keepPile.innerHTML = '';
-  discardPile.innerHTML = '';
+  [keepPile, discardPile].forEach(pile => {
+  Array.from(pile.children).forEach(child => {
+    if (child.tagName !== 'H3') {
+      pile.removeChild(child);
+    }
+  });
+});
 
   if (step <= 4) {
     renderCards(selected);
