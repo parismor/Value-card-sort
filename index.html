@@ -294,14 +294,19 @@
     }
 
     function checkProgress() {
-      const allMoved = cardStack.children.length === 0;
-      const keepCount = keepPile.children.length;
-      const showNext =
-        (step === 1 && allMoved) ||
-        (step === 2 && keepCount === 20) ||
-        (step === 3 && keepCount === 10);
-      nextBtn.style.display = showNext ? 'block' : 'none';
-    }
+  const allMoved = cardStack.children.length === 0;
+  const keepCount = keepPile.children.length;
+
+  const showNext =
+    (step === 1 && allMoved) ||
+    (step === 2 && keepCount === 20) ||
+    (step === 3 && keepCount === 10);
+
+  const showExport = (step === 4 && keepCount >= 3);
+
+  nextBtn.style.display = showNext ? 'block' : 'none';
+  exportBtn.style.display = showExport ? 'block' : 'none';
+}
 
     [discardPile, keepPile].forEach(p => {
       p.addEventListener('dragover', e => e.preventDefault());
@@ -319,29 +324,33 @@
       move(document.querySelector(".dragging"), cardStack, d.name, d.desc);
     });
 
-    nextBtn.addEventListener('click', () => {
-      const selected = Array.from(keepPile.children).map(card => {
-        const titleEl = card.querySelector('.card-title');
-        if (!titleEl) return null;
-        const name = titleEl.textContent;
-        const desc = allValues.find(v => v.name === name)?.desc || '';
-        return { name, desc };
-      }).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name)).reverse();
+ nextBtn.addEventListener('click', () => {
+  const selected = Array.from(keepPile.children).map(card => {
+    const titleEl = card.querySelector('.card-title');
+    if (!titleEl) return null;
+    const name = titleEl.textContent;
+    const desc = allValues.find(v => v.name === name)?.desc || '';
+    return { name, desc };
+  }).filter(Boolean).sort((a, b) => a.name.localeCompare(b.name)).reverse();
 
-      step++;
-      cardStack.innerHTML = '';
-      keepPile.innerHTML = '';
-      discardPile.innerHTML = '';
+  step++;
+  cardStack.innerHTML = '';
+  keepPile.innerHTML = '';
+  discardPile.innerHTML = '';
 
-      if (step <= 4) {
-        renderCards(selected);
-      } else {
-        exportBtn.style.display = 'block';
-        nextBtn.style.display = 'none';
-      }
+  if (step <= 4) {
+    renderCards(selected);
+    checkProgress();  // <-- This ensures the button reappears after new render
+  } else {
+    exportBtn.style.display = 'block';
+    nextBtn.style.display = 'none';
 
-      nextBtn.style.display = 'none';
-    });
+    // Display final cards again (optional)
+    selected.forEach(({ name, desc }) => createCard(name, desc, keepPile, false));
+  }
+
+  nextBtn.style.display = 'none';
+});
 
     exportBtn.addEventListener('click', () => {
       const selected = Array.from(keepPile.children).map(card => {
