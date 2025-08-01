@@ -216,13 +216,10 @@
   </div>
  <div id="instructions">
   <h2 id="step-title">Value Card Sort Activity: Select the values that resonate with you most.</h2>
-  <p class="step1-note">
-  For this first step, aim to keep at least 20 values.<br>
-  This will help you have enough value cards to sort through in the next rounds.
-</p>
-    Click the right side of a card or drag it to the right pile to keep it.<br>
-    Click the left side or drag it to the left pile to discard it.
-  </p>
+ <p id="step-desc" class="step1-note"></p>
+<p id="step-note" class="step1-note"></p>
+
+
 </div>
   <div style="text-align: center;">
     <button class="next-button" id="next-button">Next Step</button>
@@ -251,6 +248,7 @@
       .then(values => {
         allValues = values.sort((a, b) => a.name.localeCompare(b.name)).reverse();
         renderCards(allValues);
+        checkProgress(); 
       });
 
     function renderCards(values) {
@@ -309,25 +307,30 @@
       createCard(name, desc, pile, isStacked);
       checkProgress();
     }
-
-  function checkProgress() {
+function checkProgress() {
   const allMoved = cardStack.children.length === 0;
   const keepCount = Array.from(keepPile.children).filter(el => el.tagName !== 'H3').length;
 
+  const stepTitle = document.getElementById('step-title');
+  const stepDesc  = document.getElementById('step-desc');
+  const stepNote  = document.getElementById('step-note');
 
-  // Update title and description
   if (step === 1) {
     stepTitle.textContent = 'Value Card Sort Activity: Select the values that resonate with you most.';
     stepDesc.innerHTML = 'Click the right side of a card or drag it to the right pile to keep it.<br>Click the left side or drag it to the left pile to discard it.';
+    stepNote.innerHTML = 'For this first step, aim to keep at least 20 values.<br>This will help you have enough value cards to sort through in the next rounds.';
   } else if (step === 2) {
     stepTitle.textContent = 'Your Top 15–20 Values';
     stepDesc.textContent = 'Now, from your selected pile of cards, choose your top 15–20 values.';
+    stepNote.innerHTML = '';
   } else if (step === 3) {
     stepTitle.textContent = 'Your Top 8–10 Values';
     stepDesc.textContent = 'Time to dig deeper. Choose your top 8–10 values.';
+    stepNote.innerHTML = '';
   } else if (step === 4) {
     stepTitle.textContent = 'Your Top 3–5 Values';
     stepDesc.textContent = 'In this final step, we ask you to think about your selected values again and choose the most important and non-negotiable 3–5 values. Once ready, click Save and Export to get a copy of your top-selected values.';
+    stepNote.innerHTML = '';
   }
 
   const showNext =
@@ -339,6 +342,7 @@
   nextBtn.style.display = (step < 4 && showNext) ? 'block' : 'none';
   exportBtn.style.display = (step === 4 && showNext) ? 'block' : 'none';
 }
+
 
 
     [discardPile, keepPile].forEach(p => {
