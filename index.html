@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Value Card Sort</title>
   <style>
-    html { font-size: 16px; }
+    html { font-size: 1rem; }
     body {
       margin: 0;
       font-family: sans-serif;
@@ -21,14 +21,20 @@
       color: #F2E1C2;
     }
     #instructions h2 {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       margin-bottom: 10px;
     }
-    #instructions .step1-note {
-  font-size: 1.2rem;
+  #step-note {
+  font-size: 0.8rem;
   font-weight: normal;
   margin-top: 12px;
   line-height: 1.5;
+  color: #F2E1C2;
+}
+#step-desc {
+  font-size: 1rem;   /* Smaller instruction text */
+  margin-top: 8px;
+  line-height: 1.4;
   color: #F2E1C2;
 }
 
@@ -216,8 +222,9 @@
   </div>
  <div id="instructions">
   <h2 id="step-title">Value Card Sort Activity: Select the values that resonate with you most.</h2>
- <p id="step-desc" class="step1-note"></p>
-<p id="step-note" class="step1-note"></p>
+    <p id="step-desc"></p>
+  <p id="step-note"></p>
+
 
 
 </div>
@@ -317,8 +324,8 @@ function checkProgress() {
 
   if (step === 1) {
     stepTitle.textContent = 'Value Card Sort Activity: Select the values that resonate with you most.';
-    stepDesc.innerHTML = 'Click the right side of a card or drag it to the right pile to keep it.<br>Click the left side or drag it to the left pile to discard it.';
-    stepNote.innerHTML = 'For this first step, aim to keep at least 20 values.<br>This will help you have enough value cards to sort through in the next rounds.';
+    stepDesc.innerHTML = 'For this first step, aim to keep at least 20 values.<br>This will help you have enough value cards to sort through in the next rounds.';
+    stepNote.innerHTML =  'Click the right side of a card or drag it to the right pile to keep it.<br>Click the left side or drag it to the left pile to discard it.';
   } else if (step === 2) {
     stepTitle.textContent = 'Your Top 15–20 Values';
     stepDesc.textContent = 'Now, from your selected pile of cards, choose your top 15–20 values.';
